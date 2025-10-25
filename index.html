@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DROSERA // TRAPNET α-01</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      color: #00ff99;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+    }
+    .terminal {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: left;
+      padding: 20px;
+    }
+    .scanlines::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(transparent, rgba(0,255,100,0.05) 2px, transparent 4px);
+      pointer-events: none;
+      z-index: 10;
+      mix-blend-mode: overlay;
+    }
+    .glitch {
+      animation: flicker 2s infinite;
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        opacity: 1;
+      }
+      20%, 24%, 55% {
+        opacity: 0.4;
+      }
+    }
+    .input-line {
+      display: flex;
+      align-items: center;
+    }
+    input {
+      background: black;
+      border: none;
+      color: #00ff99;
+      font-family: inherit;
+      font-size: 1em;
+      outline: none;
+      width: 300px;
+    }
+    .cursor {
+      width: 8px;
+      height: 1em;
+      background: #00ff99;
+      display: inline-block;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="scanlines">
+  <div class="terminal">
+    <div id="output" class="glitch"></div>
+    <div class="input-line">
+      <span>&gt;_</span>
+      <input id="input" type="text" autocomplete="off" placeholder="Enter access code...">
+    </div>
+  </div>
+
+  <script>
+    const output = document.getElementById('output');
+    const input = document.getElementById('input');
+    const lines = [
+      'BOOTING DROSERA TRAPNET α-01...',
+      'Loading defense protocols...',
+      'System anomaly detected.',
+      '---',
+      'Access channel open.',
+      'Enter credentials to proceed:'
+    ];
+
+    let idx = 0;
+
+    function typeLine() {
+      if (idx < lines.length) {
+        const line = document.createElement('div');
+        line.textContent = lines[idx++];
+        output.appendChild(line);
+        setTimeout(typeLine, 900);
+      }
+    }
+
+    typeLine();
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const attempt = input.value.trim();
+        const response = document.createElement('div');
+        if (attempt === '') {
+          response.textContent = 'ACCESS CODE REQUIRED';
+        } else {
+          response.textContent = `[ACCESS DENIED]  TRACE INITIATED FOR USER: ${attempt}`;
+        }
+        output.appendChild(response);
+        input.value = '';
+        setTimeout(() => {
+          const end = document.createElement('div');
+          end.textContent = 'DROSERA HAS ADAPTED. HUMAN CONTROL: TERMINATED.';
+          output.appendChild(end);
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
